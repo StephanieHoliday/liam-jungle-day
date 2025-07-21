@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liam's Jungle Day 🌴</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #00c851, #007e33);
+            min-height: 100vh;
+            color: #2d5016;
+            overflow-x: hidden;
+        }
+
+        .jungle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="20" r="2" fill="%23ffeb3b" opacity="0.6"/><circle cx="80" cy="80" r="1.5" fill="%23ffeb3b" opacity="0.4"/><circle cx="20" cy="60" r="1" fill="%23ffeb3b" opacity="0.8"/><circle cx="90" cy="30" r="2.5" fill="%23ffeb3b" opacity="0.5"/><circle cx="60" cy="10" r="1.5" fill="%23ffeb3b" opacity="0.7"/></svg>');
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-section {
+            background: linear-gradient(135deg, #a8e6cf, #88d8a3);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 4px solid #ffeb3b;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .story-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .vocab-box {
+            background: linear-gradient(135deg, #ffccbc, #ffab91);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 3px solid #ff5722;
+        }
+
+        .vocab-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity {
+            background: linear-gradient(135deg, #e1bee7, #ce93d8);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 15px;
+            border: 3px solid #9c27b0;
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.2);
+        }
+
+        .activity h3 {
+            color: #4a148c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .drag-drop {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .drag-items, .drop-zone {
+            min-height: 350px;
+            border: 3px dashed #9c27b0;
+            border-radius: 10px;
+            padding: 20px;
+            background: white;
+        }
+
+        .drag-item {
+            background: linear-gradient(45deg, #ffeb3b, #ffc107);
+            padding: 18px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: move;
+            font-size: 1.2em;
+            border: 2px solid #ff9800;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .drag-item:hover {
+            transform: scale(1.05);
+        }
+
+        .drag-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .time-matching {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .time-item, .activity-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .time-item:hover, .activity-item:hover {
+            background: #c8e6c9;
+            transform: translateY(-2px);
+        }
+
+        .time-item.selected, .activity-item.selected {
+            background: #4caf50;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .time-item.matched, .activity-item.matched {
+            background: #81c784;
+            color: white;
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .true-false {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .tf-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tf-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tf-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tf-btn.true {
+            background: #4caf50;
+            color: white;
+        }
+
+        .tf-btn.false {
+            background: #f44336;
+            color: white;
+        }
+
+        .tf-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .tf-btn.selected {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            transform: scale(1.15);
+        }
+
+        .brain-ring {
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 30px 0;
+            border: 4px solid #ffeb3b;
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+        }
+
+        .brain-ring h3 {
+            color: white;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .question-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 3px solid #4caf50;
+            font-size: 1.3em;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .check-btn {
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin: 15px 10px;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #ff9800, #ff5722);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin: 15px 10px;
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        .result {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.3em;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .correct {
+            background: #c8e6c9;
+            color: #2e7d32;
+            border: 3px solid #4caf50;
+        }
+
+        .incorrect {
+            background: #ffcdd2;
+            color: #c62828;
+            border: 3px solid #f44336;
+        }
+
+        .creative-section {
+            background: linear-gradient(135deg, #f8bbd9, #f48fb1);
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #e91e63;
+            margin: 30px 0;
+        }
+
+        .creative-section h3 {
+            color: #880e4f;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .drag-drop, .time-matching {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="jungle-bg"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🌴 Liam's Jungle Day 🐒</h1>
+            <p>An Interactive English Learning Adventure!</p>
+        </div>
+
+        <div class="story-section">
+            <h2>📚 The Story</h2>
+            <div class="story-text">
+                <p>👋 Hi! My name is Liam and I'm from Ireland. But now I live in the Amazon jungle in Brazil! I study monkeys, birds, and frogs. My day is very different here!</p>
+                
+                <p>🕓 I get up at 4 o'clock in the afternoon. I have a quick shower, then I eat breakfast with my friends.</p>
+                <p>🎒 At 5:30, we pack our bags.</p>
+                <p>🌳 At 6 o'clock, we walk into the forest.</p>
+                
+                <p>🦜 We look at birds and monkeys. We don't talk — we want to be very quiet. ✏️ We write the animals' names in our notebooks.</p>
+                <p>🥪 At 9:30, we sit and eat sandwiches. 🧃 We drink juice or water. It's our lunch!</p>
+                
+                <p>🐸 At 10:15, we look for frogs and other night animals. 🔦 We use flashlights because it is dark.</p>
+                
+                <p>⏰ We finish our work at 3 o'clock in the morning.</p>
+                <p>💻 Before dinner, we write notes on the computer.</p>
+                <p>🍽️ We eat at 5:15 a.m., and at 5:45, I go to bed. 😴</p>
+                
+                <p>☀️ I don't see the sun, but I love my jungle day!</p>
+            </div>
+        </div>
+
+        <div class="vocab-box">
+            <h2>📚 Vocabulary Box</h2>
+            <div class="vocab-item"><strong>get up ⏰</strong> - to leave your bed in the morning or evening</div>
+            <div class="vocab-item"><strong>go to bed 😴</strong> - to lie down and sleep</div>
+            <div class="vocab-item"><strong>have breakfast/lunch/dinner 🍽️</strong> - to eat food in the morning, afternoon, or evening</div>
+            <div class="vocab-item"><strong>look at 👀</strong> - to use your eyes to see something</div>
+            <div class="vocab-item"><strong>write ✏️</strong> - to put words or names on paper</div>
+            <div class="vocab-item"><strong>eat 🍔</strong> - to take food into your mouth</div>
+            <div class="vocab-item"><strong>drink 🧃</strong> - to take liquid into your mouth</div>
+            <div class="vocab-item"><strong>flashlight 🔦</strong> - a small light you carry in your hand</div>
+            <div class="vocab-item"><strong>quiet 🤫</strong> - not loud, very soft</div>
+            <div class="vocab-item"><strong>dark 🌌</strong> - no light or very little light</div>
+        </div>
+
+        <div class="activity">
+            <h3>1. 🔁 Put in Order – Daily Routine</h3>
+            <p>Drag Liam's activities in the correct order!</p>
+            <div class="drag-drop">
+                <div class="drag-items" id="dragItems">
+                    <div class="drag-item" draggable="true" data-order="1">C. ⏰ He gets up.</div>
+                    <div class="drag-item" draggable="true" data-order="2">B. 👀 He looks at birds and monkeys.</div>
+                    <div class="drag-item" draggable="true" data-order="3">E. 🥪 He eats sandwiches.</div>
+                    <div class="drag-item" draggable="true" data-order="4">D. 🐸 He looks for frogs.</div>
+                    <div class="drag-item" draggable="true" data-order="5">A. 🍽️ He eats dinner.</div>
+                    <div class="drag-item" draggable="true" data-order="6">F. 😴 He goes to bed.</div>
+                </div>
+                <div class="drop-zone" id="dropZone">
+                    <p style="text-align: center; color: #666;">Drop items here in order!</p>
+                </div>
+            </div>
+            <button class="check-btn" onclick="checkOrder()">Check Order</button>
+            <button class="reset-btn" onclick="resetOrder()">Reset</button>
+            <div id="orderResult"></div>
+        </div>
+
+        <div class="activity">
+            <h3>2. ⌚ What Time Is It? – Match the Time</h3>
+            <p>Click on a time, then click on the matching activity!</p>
+            <div class="time-matching">
+                <div class="time-items">
+                    <div class="time-item" data-time="4:00 p.m." onclick="selectTime(this)">🕓 4:00 p.m.</div>
+                    <div class="time-item" data-time="5:30 p.m." onclick="selectTime(this)">🕠 5:30 p.m.</div>
+                    <div class="time-item" data-time="6:00 p.m." onclick="selectTime(this)">🕕 6:00 p.m.</div>
+                    <div class="time-item" data-time="9:30 p.m." onclick="selectTime(this)">🕤 9:30 p.m.</div>
+                    <div class="time-item" data-time="10:15 p.m." onclick="selectTime(this)">🕥 10:15 p.m.</div>
+                    <div class="time-item" data-time="3:00 a.m." onclick="selectTime(this)">🕒 3:00 a.m.</div>
+                    <div class="time-item" data-time="5:15 a.m." onclick="selectTime(this)">🕔 5:15 a.m.</div>
+                    <div class="time-item" data-time="5:45 a.m." onclick="selectTime(this)">🕕 5:45 a.m.</div>
+                </div>
+                <div class="activity-items">
+                    <div class="activity-item" data-activity="He gets up" onclick="selectActivity(this)">C. ⏰ He gets up</div>
+                    <div class="activity-item" data-activity="He packs his bag" onclick="selectActivity(this)">E. 🎒 He packs his bag</div>
+                    <div class="activity-item" data-activity="He walks into the forest" onclick="selectActivity(this)">D. 🌳 He walks into the forest</div>
+                    <div class="activity-item" data-activity="He eats sandwiches" onclick="selectActivity(this)">A. 🥪 He eats sandwiches</div>
+                    <div class="activity-item" data-activity="He looks for frogs" onclick="selectActivity(this)">F. 🐸 He looks for frogs</div>
+                    <div class="activity-item" data-activity="He finishes his work" onclick="selectActivity(this)">B. ✅ He finishes his work</div>
+                    <div class="activity-item" data-activity="He eats dinner" onclick="selectActivity(this)">G. 🍽️ He eats dinner</div>
+                    <div class="activity-item" data-activity="He goes to bed" onclick="selectActivity(this)">H. 😴 He goes to bed</div>
+                </div>
+            </div>
+            <button class="check-btn" onclick="checkTimeMatching()">Check Matches</button>
+            <button class="reset-btn" onclick="resetTimeMatching()">Reset</button>
+            <div id="timeResult"></div>
+        </div>
+
+        <div class="activity">
+            <h3>3. ✅❌ True or False?</h3>
+            <p>Read each sentence carefully and choose True or False!</p>
+            <div class="true-false">
+                <div class="tf-item">
+                    <span>Liam lives in Scotland.</span>
+                    <div class="tf-buttons">
+                        <button class="tf-btn true" onclick="selectTF(this, 'false')">TRUE</button>
+                        <button class="tf-btn false" onclick="selectTF(this, 'false')">FALSE</button>
+                    </div>
+                </div>
+                <div class="tf-item">
+                    <span>Liam gets up at 4 a.m.</span>
+                    <div class="tf-buttons">
+                        <button class="tf-btn true" onclick="selectTF(this, 'false')">TRUE</button>
+                        <button class="tf-btn false" onclick="selectTF(this, 'false')">FALSE</button>
+                    </div>
+                </div>
+                <div class="tf-item">
+                    <span>He works at night.</span>
+                    <div class="tf-buttons">
+                        <button class="tf-btn true" onclick="selectTF(this, 'true')">TRUE</button>
+                        <button class="tf-btn false" onclick="selectTF(this, 'true')">FALSE</button>
+                    </div>
+                </div>
+                <div class="tf-item">
+                    <span>He talks a lot in the forest.</span>
+                    <div class="tf-buttons">
+                        <button class="tf-btn true" onclick="selectTF(this, 'false')">TRUE</button>
+                        <button class="tf-btn false" onclick="selectTF(this, 'false')">FALSE</button>
+                    </div>
+                </div>
+                <div class="tf-item">
+                    <span>He eats dinner at 5:15 a.m.</span>
+                    <div class="tf-buttons">
+                        <button class="tf-btn true" onclick="selectTF(this, 'true')">TRUE</button>
+                        <button class="tf-btn false" onclick="selectTF(this, 'true')">FALSE</button>
+                    </div>
+                </div>
+                <div class="tf-item">
+                    <span>He goes to bed before midnight.</span>
+                    <div class="tf-buttons">
+                        <button class="tf-btn true" onclick="selectTF(this, 'false')">TRUE</button>
+                        <button class="tf-btn false" onclick="selectTF(this, 'false')">FALSE</button>
+                    </div>
+                </div>
+            </div>
+            <button class="check-btn" onclick="checkTrueFalse()">Check Answers</button>
+            <button class="reset-btn" onclick="resetTrueFalse()">Reset</button>
+            <div id="tfResult"></div>
+        </div>
+
+        <div class="brain-ring">
+            <h3>🧠 Brain Ring - Pair Work!</h3>
+            <p style="color: white; font-size: 1.2em; margin-bottom: 20px;">Work with a partner! Take turns asking and answering these questions:</p>
+            <div class="question-card">🕐 What time do you get up?</div>
+            <div class="question-card">🍳 What do you eat for breakfast?</div>
+            <div class="question-card">🐾 Do you like animals?</div>
+            <div class="question-card">😴 What time do you go to bed?</div>
+            <div class="question-card">🦁 What animals do you like?</div>
+        </div>
+
+        <div class="creative-section">
+            <h3>🎨 Draw and Describe Your Day!</h3>
+            <p style="font-size: 1.2em; text-align: center; margin-bottom: 20px;">
+                Create a comic strip or timeline of your day using Present Simple and time expressions!
+            </p>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <p><strong>Examples:</strong></p>
+                <p>📅 "I get up at 7 o'clock."</p>
+                <p>🏫 "I go to school at 8."</p>
+                <p>📚 "I do homework at 5."</p>
+                <p>🌙 "I go to bed at 9:30."</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let draggedElement = null;
+        let selectedTime = null;
+        let selectedActivity = null;
+        let timeMatches = {};
+        let tfAnswers = {};
+
+        // Correct answers
+        const correctOrder = ['1', '2', '3', '4', '5', '6'];
+        const correctTimeMatches = {
+            '4:00 p.m.': 'He gets up',
+            '5:30 p.m.': 'He packs his bag',
+            '6:00 p.m.': 'He walks into the forest',
+            '9:30 p.m.': 'He eats sandwiches',
+            '10:15 p.m.': 'He looks for frogs',
+            '3:00 a.m.': 'He finishes his work',
+            '5:15 a.m.': 'He eats dinner',
+            '5:45 a.m.': 'He goes to bed'
+        };
+
+        // Drag and Drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            setupDragAndDrop();
+        });
+
+        function setupDragAndDrop() {
+            const dragItems = document.querySelectorAll('.drag-item');
+            const dropZone = document.getElementById('dropZone');
+
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+
+            dropZone.addEventListener('dragover', handleDragOver);
+            dropZone.addEventListener('drop', handleDrop);
+        }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            draggedElement = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            if (draggedElement) {
+                e.target.appendChild(draggedElement);
+            }
+        }
+
+        function checkOrder() {
+            const dropZone = document.getElementById('dropZone');
+            const droppedItems = dropZone.querySelectorAll('.drag-item');
+            const userOrder = Array.from(droppedItems).map(item => item.getAttribute('data-order'));
+            const resultDiv = document.getElementById('orderResult');
+
+            if (userOrder.length !== 6) {
+                resultDiv.innerHTML = '<div class="result incorrect">❌ Please drag all items to the drop zone!</div>';
+                return;
+            }
+
+            const isCorrect = JSON.stringify(userOrder) === JSON.stringify(correctOrder);
+            
+            if (isCorrect) {
+                resultDiv.innerHTML = '<div class="result correct">🎉 Excellent! You got the correct order!</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result incorrect">❌ Not quite right. Try again! The correct order is: Get up → Look at animals → Eat sandwiches → Look for frogs → Eat dinner → Go to bed</div>';
+            }
+        }
+
+        function resetOrder() {
+            const dragItems = document.getElementById('dragItems');
+            const dropZone = document.getElementById('dropZone');
+            const droppedItems = dropZone.querySelectorAll('.drag-item');
+            
+            droppedItems.forEach(item => {
+                dragItems.appendChild(item);
+            });
+            
+            dropZone.innerHTML = '<p style="text-align: center; color: #666;">Drop items here in order!</p>';
+            document.getElementById('orderResult').innerHTML = '';
+        }
+
+        // Time Matching functionality
+        function selectTime(element) {
+            // Don't allow selection if already matched
+            if (element.classList.contains('matched')) return;
+            
+            // Clear previous time selection
+            document.querySelectorAll('.time-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            selectedTime = element.getAttribute('data-time');
+            
+            if (selectedActivity) {
+                makeMatch();
+            }
+        }
+
+        function selectActivity(element) {
+            // Don't allow selection if already matched
+            if (element.classList.contains('matched')) return;
+            
+            // Clear previous activity selection
+            document.querySelectorAll('.activity-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            selectedActivity = element.getAttribute('data-activity');
+            
+            if (selectedTime) {
+                makeMatch();
+            }
+        }
+
+        function makeMatch() {
+            timeMatches[selectedTime] = selectedActivity;
+            
+            // Find the selected elements and mark them as matched
+            const selectedTimeElement = document.querySelector('.time-item.selected');
+            const selectedActivityElement = document.querySelector('.activity-item.selected');
+            
+            if (selectedTimeElement && selectedActivityElement) {
+                // Add matched class to make them disappear
+                setTimeout(() => {
+                    selectedTimeElement.classList.add('matched');
+                    selectedActivityElement.classList.add('matched');
+                }, 200);
+            }
+            
+            // Clear selections
+            document.querySelectorAll('.time-item, .activity-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            selectedTime = null;
+            selectedActivity = null;
+        }
+
+        function checkTimeMatching() {
+            const resultDiv = document.getElementById('timeResult');
+            let correct = 0;
+            let total = Object.keys(correctTimeMatches).length;
+            
+            for (let time in correctTimeMatches) {
+                if (timeMatches[time] === correctTimeMatches[time]) {
+                    correct++;
+                }
+            }
+            
+            if (correct === total) {
+                resultDiv.innerHTML = '<div class="result correct">🎉 Perfect! All matches are correct!</div>';
+            } else {
+                resultDiv.innerHTML = `<div class="result incorrect">❌ You got ${correct} out of ${total} correct. Try again!</div>`;
+            }
+        }
+
+        function resetTimeMatching() {
+            timeMatches = {};
+            document.querySelectorAll('.time-item, .activity-item').forEach(item => {
+                item.classList.remove('selected', 'matched');
+                item.style.opacity = '1';
+                item.style.pointerEvents = 'auto';
+            });
+            document.getElementById('timeResult').innerHTML = '';
+            selectedTime = null;
+            selectedActivity = null;
+        }
+
+        // True/False functionality
+        function selectTF(button, correctAnswer) {
+            const tfItem = button.parentElement.parentElement;
+            const buttons = tfItem.querySelectorAll('.tf-btn');
+            const questionIndex = Array.from(document.querySelectorAll('.tf-item')).indexOf(tfItem);
+            
+            // Clear previous selection
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            
+            // Select current button
+            button.classList.add('selected');
+            
+            // Store answer
+            const isTrue = button.classList.contains('true');
+            tfAnswers[questionIndex] = {
+                selected: isTrue ? 'true' : 'false',
+                correct: correctAnswer
+            };
+        }
+
+        function checkTrueFalse() {
+            const resultDiv = document.getElementById('tfResult');
+            let correct = 0;
+            let total = 6;
+            
+            for (let i = 0; i < total; i++) {
+                if (tfAnswers[i] && tfAnswers[i].selected === tfAnswers[i].correct) {
+                    correct++;
+                }
+            }
+            
+            if (Object.keys(tfAnswers).length < total) {
+                resultDiv.innerHTML = '<div class="result incorrect">❌ Please answer all questions!</div>';
+                return;
+            }
+            
+            if (correct === total) {
+                resultDiv.innerHTML = '<div class="result correct">🎉 Fantastic! All answers are correct!</div>';
+            } else {
+                resultDiv.innerHTML = `<div class="result incorrect">❌ You got ${correct} out of ${total} correct. Remember: Liam lives in Brazil, gets up at 4 PM, works at night, stays quiet in the forest, eats dinner at 5:15 AM, and goes to bed at 5:45 AM!</div>`;
+            }
+        }
+
+        function resetTrueFalse() {
+            tfAnswers = {};
+            document.querySelectorAll('.tf-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.getElementById('tfResult').innerHTML = '';
+        }
+
+        // Add some fun animations
+        function addFloatingEmojis() {
+            const emojis = ['🐒', '🦜', '🐸', '🌴', '🦋', '🐾'];
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            const floatingEmoji = document.createElement('div');
+            floatingEmoji.innerHTML = emoji;
+            floatingEmoji.style.position = 'fixed';
+            floatingEmoji.style.left = Math.random() * window.innerWidth + 'px';
+            floatingEmoji.style.top = window.innerHeight + 'px';
+            floatingEmoji.style.fontSize = '2em';
+            floatingEmoji.style.zIndex = '1000';
+            floatingEmoji.style.pointerEvents = 'none';
+            floatingEmoji.style.animation = 'floatUp 3s linear forwards';
+            
+            document.body.appendChild(floatingEmoji);
+            
+            setTimeout(() => {
+                floatingEmoji.remove();
+            }, 3000);
+        }
+
+        // Add floating emoji style
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatUp {
+                from {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateY(-${window.innerHeight + 100}px) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add floating emojis every few seconds
+        setInterval(addFloatingEmojis, 3000);
+    </script>
+</body>
+</html>
